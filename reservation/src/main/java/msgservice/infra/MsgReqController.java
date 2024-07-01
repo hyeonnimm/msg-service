@@ -28,12 +28,14 @@ public class MsgReqController {
     public MsgReq reserve(
         HttpServletRequest request,
         HttpServletResponse response,
-        @RequestBody MsgReq msgReq
+        @RequestBody ReserveCommand reserveCommand
     ) throws Exception {
         System.out.println("##### /msgReq/reserve  called #####");
-        msgReq.reserve(reservecommand);
-        msgReqRepository.save(msgReq);
-        return msgReq;
+        // MsgReq.reserve(reserveCommand);
+        // msgReq
+        // msgReqRepository.save(msgReq);
+        // return MsgReq;
+        return MsgReq.reserve(reserveCommand) ;
     }
 }
 //>>> Clean Arch / Inbound Adaptor
