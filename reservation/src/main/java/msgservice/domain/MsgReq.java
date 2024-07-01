@@ -49,14 +49,6 @@ public class MsgReq {
     }
 
     //<<< Clean Arch / Port Method
-    public void reserve(ReserveCommand reserveCommand) {
-        //implement business logic here:
-
-    }
-
-    //>>> Clean Arch / Port Method
-
-    //<<< Clean Arch / Port Method
     public static void updateStatus(MsgSent msgSent) {
         //implement business logic here:
 

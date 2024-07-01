@@ -19,21 +19,5 @@ public class MsgReqController {
 
     @Autowired
     MsgReqRepository msgReqRepository;
-
-    @RequestMapping(
-        value = "msgReqs/",
-        method = RequestMethod.POST,
-        produces = "application/json;charset=UTF-8"
-    )
-    public MsgReq reserve(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        @RequestBody MsgReq msgReq
-    ) throws Exception {
-        System.out.println("##### /msgReq/reserve  called #####");
-        msgReq.reserve(reservecommand);
-        msgReqRepository.save(msgReq);
-        return msgReq;
-    }
 }
 //>>> Clean Arch / Inbound Adaptor
