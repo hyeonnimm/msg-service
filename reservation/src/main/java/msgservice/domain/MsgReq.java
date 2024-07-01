@@ -3,6 +3,7 @@ package msgservice.domain;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.*;
 import javax.persistence.*;
 import lombok.Data;
 import msgservice.ReservationApplication;
@@ -18,7 +19,7 @@ public class MsgReq {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String userId;
+    private Long userId;
 
     private String msgTitle;
 
@@ -49,9 +50,25 @@ public class MsgReq {
     }
 
     //<<< Clean Arch / Port Method
-    public void reserve(ReserveCommand reserveCommand) {
+    // public static void reserve(ReserveCommand reserveCommand) {
+    public static MsgReq reserve(ReserveCommand reserveCommand) {
         //implement business logic here:
+        MsgReq msgReq = new MsgReq();
+        msgReq.setUserId(reserveCommand.getUserId());
+        msgReq.setMsgTitle(reserveCommand.getMsgTitle());
+        msgReq.setMsgContent(reserveCommand.getMsgContent());
+        msgReq.setReserveQt(reserveCommand.getReserveQt());
 
+        msgReq.setReserveDt(new Date());
+        msgReq.setCallbackNum("114");
+        msgReq.setDstNum(Arrays.asList("A", "B"));
+        msgReq.setStatus("Reserved");
+
+        repository().save(msgReq);
+
+        // Reserved reserved = new Reserved(msgReq);
+        // reserved.publishAfterCommit();
+        return msgReq ;
     }
 
     //>>> Clean Arch / Port Method
