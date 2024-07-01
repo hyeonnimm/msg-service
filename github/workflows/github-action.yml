@@ -1,0 +1,76 @@
+name: github-action
+run-name: ${{ github.actor }} is out building GitHub Actions
+
+on:
+  push:
+    # Pattern matched against refs/tags
+    tags:        
+      - '**' 
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Build Maven Projects
+        run: |
+          mvn clean package -f ./reservation/pom.xml
+          mvn clean package -f ./send/pom.xml
+          mvn clean package -f ./stat/pom.xml
+          mvn clean package -f ./monitoring/pom.xml
+
+      - name: Docker Build and push for Reservation
+        uses: docker/build-push-action@v4
+        with:
+          context: ./reservation
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/reservation:latest
+            ghcr.io/${{ github.repository }}/reservation:${{ github.ref_name }}
+            
+      - name: Docker Build and push for Send
+        uses: docker/build-push-action@v4
+        with:
+          context: ./send
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/send:latest
+            ghcr.io/${{ github.repository }}/send:${{ github.ref_name }}
+            
+      - name: Docker Build and push for Stat
+        uses: docker/build-push-action@v4
+        with:
+          context: ./stat
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/stat:latest
+            ghcr.io/${{ github.repository }}/stat:${{ github.ref_name }}
+            
+      - name: Docker Build and push for Monitoring
+        uses: docker/build-push-action@v4
+        with:
+          context: ./monitoring
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/monitoring:latest
+            ghcr.io/${{ github.repository }}/monitoring:${{ github.ref_name }}
+            
