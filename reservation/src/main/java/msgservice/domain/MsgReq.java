@@ -7,7 +7,6 @@ import java.util.*;
 import javax.persistence.*;
 import lombok.Data;
 import msgservice.ReservationApplication;
-import msgservice.domain.Reserved;
 
 @Entity
 @Table(name = "MsgReq_table")
@@ -37,10 +36,7 @@ public class MsgReq {
     private String status;
 
     @PostPersist
-    public void onPostPersist() {
-        Reserved reserved = new Reserved(this);
-        reserved.publishAfterCommit();
-    }
+    public void onPostPersist() {}
 
     public static MsgReqRepository repository() {
         MsgReqRepository msgReqRepository = ReservationApplication.applicationContext.getBean(
@@ -65,6 +61,7 @@ public class MsgReq {
         msgReq.setStatus("Reserved");
 
         repository().save(msgReq);
+
 
         // Reserved reserved = new Reserved(msgReq);
         // reserved.publishAfterCommit();
