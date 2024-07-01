@@ -12,6 +12,10 @@ public class MsgReqHateoasProcessor
 
     @Override
     public EntityModel<MsgReq> process(EntityModel<MsgReq> model) {
+        model.add(
+            Link.of(model.getRequiredLink("self").getHref() + "/").withRel("")
+        );
+
         return model;
     }
 }

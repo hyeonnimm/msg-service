@@ -42,7 +42,7 @@
                     text
                     @click="save"
                 >
-                    Reserve
+                저장
                 </v-btn>
                 <v-btn
                     color="primary"
@@ -64,6 +64,20 @@
         </v-card-actions>
         <v-card-actions>
             <v-spacer></v-spacer>
+            <v-btn
+                v-if="!editMode"
+                color="primary"
+                text
+                @click="openReserve"
+            >
+                Reserve
+            </v-btn>
+            <v-dialog v-model="reserveDiagram" width="500">
+                <ReserveCommand
+                    @closeDialog="closeReserve"
+                    @reserve="reserve"
+                ></ReserveCommand>
+            </v-dialog>
         </v-card-actions>
 
         <v-snackbar
@@ -101,6 +115,7 @@
                 timeout: 5000,
                 text: '',
             },
+            reserveDiagram: false,
         }),
 	async created() {
         },
@@ -198,16 +213,18 @@
             change(){
                 this.$emit('input', this.value);
             },
-            async () {
+            async reserve() {
                 try {
-                    if(!this.offline) {
-                        var temp = await axios.put(axios.fixUrl(this.value._links[''].href))
-                        for(var k in temp.data) {
-                            this.value[k]=temp.data[k];
-                        }
+                    if(!this.offline){
+                        var temp = await axios.post(axios.fixUrl(this.value._links[''].href))
+                        for(var k in temp.data) this.value[k]=temp.data[k];
                     }
 
                     this.editMode = false;
+                    
+                    this.$emit('input', this.value);
+                    this.$emit('delete', this.value);
+                
                 } catch(e) {
                     this.snackbar.status = true
                     if(e.response && e.response.data.message) {

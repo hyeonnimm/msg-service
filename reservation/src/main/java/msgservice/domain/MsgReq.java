@@ -6,7 +6,6 @@ import java.util.List;
 import javax.persistence.*;
 import lombok.Data;
 import msgservice.ReservationApplication;
-import msgservice.domain.Reserved;
 
 @Entity
 @Table(name = "MsgReq_table")
@@ -36,10 +35,7 @@ public class MsgReq {
     private String status;
 
     @PostPersist
-    public void onPostPersist() {
-        Reserved reserved = new Reserved(this);
-        reserved.publishAfterCommit();
-    }
+    public void onPostPersist() {}
 
     public static MsgReqRepository repository() {
         MsgReqRepository msgReqRepository = ReservationApplication.applicationContext.getBean(
@@ -47,6 +43,16 @@ public class MsgReq {
         );
         return msgReqRepository;
     }
+
+    //<<< Clean Arch / Port Method
+    public void reserve(ReserveCommand reserveCommand) {
+        //implement business logic here:
+
+        Reserved reserved = new Reserved(this);
+        reserved.publishAfterCommit();
+    }
+
+    //>>> Clean Arch / Port Method
 
     //<<< Clean Arch / Port Method
     public static void updateStatus(MsgSent msgSent) {
